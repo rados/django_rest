@@ -1,17 +1,27 @@
-from mystore.models import Product, Order
 from rest_framework import serializers
+from drf_writable_nested import WritableNestedModelSerializer
+
+from .models import Order, Product
 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
+        ordering = ['-id']
         model = Product
         fields = ['id', 'title', 'price']
-        extra_kwargs = {'orders': {'required': False}}
+        # extra_kwargs = {'orders': {'required': False}}
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True)
+class OrderSerializer(WritableNestedModelSerializer):
+    products = ProductSerializer(many=True, allow_null=True)
     class Meta:
+        ordering = ['-id']
         model = Order
         fields = ['id', 'date', 'products']
         extra_kwargs = {'products': {'required': False}}
+
+
+class StatsSerializer(serializers.Serializer):
+    value = serializers.IntegerField()
+    month = serializers.DateField(format='%Y %b')
+
