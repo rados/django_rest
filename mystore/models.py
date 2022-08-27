@@ -8,7 +8,7 @@ class Product(models.Model):
 
 class Order(models.Model):
     date = models.DateField(auto_now_add=True)
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, blank=True)
 
     class Meta:
         ordering = ['date']

@@ -4,8 +4,8 @@ from mystore import views
 
 urlpatterns = [
     path('api/products/<int:pk>/', views.Product.as_view()),
-    path('api/allproducts/', views.ProductList.as_view()),
-    path('api/allorders/', views.OrderList.as_view()),
+    path('api/products/', views.ProductList.as_view()),
+    path('api/orders/', views.OrderList.as_view()),
     path('api/orders/<int:pk>/', views.Order.as_view()),
 ]
 

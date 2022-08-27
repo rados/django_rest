@@ -6,6 +6,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'title', 'price']
+        extra_kwargs = {'orders': {'required': False}}
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -13,3 +14,4 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'date', 'products']
+        extra_kwargs = {'products': {'required': False}}
