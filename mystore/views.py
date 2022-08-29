@@ -23,20 +23,7 @@ class StatsViewSet(viewsets.ModelViewSet):
         if metric not in ['count', 'price']:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        queryset = self.get_queryset()  # self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(date__range=(date_start, date_end))
-
-        #todo: add switch statement
-        if metric == 'count':
-            queryset = queryset.annotate(month=TruncMonth('date')) \
-                .values('month') \
-                .annotate(value=Count('products'), date=Cast(TruncMonth('date'), output_field=DateField())) \
-                .values('month', 'value')
-        elif metric == 'price':
-            queryset = queryset.annotate(month=TruncMonth('date')) \
-                .values('month') \
-                .annotate(value=Sum('products__price'), date=Cast(TruncMonth('date'), output_field=DateField())) \
-                .values('month', 'value')
+        queryset = self._calculate_stats(date_end, date_start, metric)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -45,6 +32,23 @@ class StatsViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(list(queryset), many=True)
         return Response(serializer.data)
+
+    def _calculate_stats(self, date_end, date_start, metric):
+        if metric == 'count':
+            value_func = Count
+            value_param = 'products'
+        elif metric == 'price':
+            value_func = Sum
+            value_param = 'products__price'
+
+        queryset = self.get_queryset()
+        queryset = queryset.filter(date__range=(date_start, date_end))
+        queryset = queryset.annotate(month=TruncMonth('date')) \
+            .values('month') \
+            .annotate(value=value_func(value_param), date=Cast(TruncMonth('date'), output_field=DateField())) \
+            .values('month', 'value')
+
+        return queryset
 
 
 class ProductViewSet(viewsets.ModelViewSet):
