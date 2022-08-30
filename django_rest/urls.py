@@ -15,24 +15,42 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from mystore.views import OrderViewSet, ProductViewSet, StatsViewSet
 from rest_framework.routers import DefaultRouter
+
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view as swagger_get_schema_view
+
+from mystore.views import OrderViewSet, ProductViewSet, StatsViewSet
+
+schema_view = swagger_get_schema_view(
+    openapi.Info(
+        title="MyStore API",
+        default_version='1.0.0',
+        description="API documentation of MyStore",
+    ),
+    public=True,
+)
 
 
 # Routers provide an easy way of automatically determining the URL conf.
 
 router = DefaultRouter()
-router.register(r'api/orders', OrderViewSet, basename='order')
-router.register(r'api/products', ProductViewSet, basename='product')
-router.register(r'api/stats', StatsViewSet, basename='order')
+router.register(r'orders', OrderViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'stats', StatsViewSet)
 
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'', include(router.urls)),
-    path(r'api/', include('rest_framework.urls', namespace='rest_framework')),
+    path(r'api/', include(router.urls)),
+    path('api/',
+         include([
+             path('swagger/schema/', schema_view.with_ui('swagger', cache_timeout=0), name="swagger-schema"),
+         ])
+    ),
+    # path(r'api/', include('rest_framework.urls', namespace='rest_framework')),
     # path(
     #     '^api/stats/(?P<metric>[price|count])(?P<start_date>\d{4}-\d{2}-\d{2})(?P<end_date>\d{4}-\d{2}-\d{2})$',
     #     StatsViewSet
