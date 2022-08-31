@@ -37,6 +37,7 @@ router.register(r'orders', OrderViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'stats', StatsViewSet)
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'api/', include(router.urls)),

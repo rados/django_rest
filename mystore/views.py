@@ -5,7 +5,7 @@ from django.db.models import DateField, Count, Sum
 from django.utils.dateparse import parse_date
 from .serializers import OrderSerializer, ProductSerializer, StatsSerializer
 from .models import Product, Order
-from rest_framework import filters
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -13,6 +13,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class StatsViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
     queryset = Order.objects.all()
     serializer_class = StatsSerializer
 
