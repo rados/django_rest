@@ -1,6 +1,6 @@
-from rest_framework import routers, serializers, viewsets, status
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from django.db.models.functions import TruncDay, TruncDate, TruncMonth, TruncYear, TruncWeek, Cast, ExtractMonth
+from django.db.models.functions import TruncMonth, Cast
 from django.db.models import DateField, Count, Sum
 from django.utils.dateparse import parse_date
 from .serializers import OrderSerializer, ProductSerializer, StatsSerializer
@@ -25,7 +25,6 @@ class StatsViewSet(viewsets.ModelViewSet):
 
         if date_start is None or date_end is None:
             return Response(
-                # data={'Metric Error': 'Metric field should be "count" or "price"'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -40,7 +39,6 @@ class StatsViewSet(viewsets.ModelViewSet):
             metric_param = 'products__price'
         else:
             return Response(
-                # data={'Metric Error': 'Metric field should be "count" or "price"'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 

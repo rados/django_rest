@@ -9,7 +9,6 @@ class ProductSerializer(serializers.ModelSerializer):
         ordering = ['-id']
         model = Product
         fields = ['id', 'title', 'price']
-        # extra_kwargs = {'orders': {'required': False}}
 
 
 class OrderSerializer(WritableNestedModelSerializer):
